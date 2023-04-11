@@ -1,0 +1,13 @@
+.grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+}
+
+.btn {
+  width: 250px;
+  margin: 16px auto;
+}
