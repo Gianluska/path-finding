@@ -1,6 +1,7 @@
 .grid {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(var(--columns), 1fr);
+  grid-template-rows: repeat(var(--rows), 1fr);
 }
 
 .row {
@@ -9,5 +10,5 @@
 
 .btn {
   width: 250px;
-  margin: 16px auto;
+  margin: 16px;
 }

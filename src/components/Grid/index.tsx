@@ -8,15 +8,20 @@ import {
   getNodesInShortestPathOrder,
 } from "../../algorithms/dijkstra";
 
-const INITIAL_NODE_ROW = 10;
-const INITIAL_NODE_COLUMN = 7;
-const FINAL_NODE_ROW = 10;
-const FINAL_NODE_COLUMN = 22;
-
 export const Grid = () => {
   const [grid, setGrid] = useState<INode[][]>([[]]);
   const [mousePressed, setMousePressed] = useState<boolean>(false);
-  const nodesRef: React.RefObject<HTMLDivElement>[] | any = useRef([]);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  const maxColumns = Math.floor(
+    Math.min(document.body.clientWidth * 0.8, 1280) / 30
+  );
+  const maxRows = Math.floor((document.body.clientHeight * 0.7) / 30);
+
+  const INITIAL_NODE_ROW = Math.floor(maxColumns / 3.3);
+  const INITIAL_NODE_COLUMN = Math.floor(maxColumns / 4);
+  const FINAL_NODE_ROW = Math.floor(maxColumns / 3.3);
+  const FINAL_NODE_COLUMN = Math.floor(maxColumns / 1.4);
 
   const handleMouseDown = (row: number, column: number) => {
     const newGrid = getNewGridWithWallToggled(grid, row, column);
@@ -36,13 +41,16 @@ export const Grid = () => {
 
   const initGrid = () => {
     const grid = [];
-    for (let row = 0; row < 21; row++) {
+    for (let row = 0; row < maxRows; row++) {
       const currentRow: Array<any> = [];
-      for (let column = 0; column < 30; column++) {
+      for (let column = 0; column < maxColumns; column++) {
         currentRow.push(createNode(row, column));
       }
       grid.push(currentRow);
     }
+
+    gridRef.current?.style.setProperty("--columns", `${maxColumns}`);
+    gridRef.current?.style.setProperty("--row", `${maxRows}`);
 
     return grid;
   };
@@ -130,13 +138,18 @@ export const Grid = () => {
   }, []);
 
   return (
-    <div className="grid">
-      <button className="btn" onClick={() => visualizeDijkstra()}>
-        MAGIC!
-      </button>
-      {grid.map((row, rowIndex) => (
-        <div className="row" key={rowIndex}>
-          {row.map((node, columnIndex) => {
+    <>
+      <div>
+        <button className="btn" onClick={() => visualizeDijkstra()}>
+          DIJKSTRA!
+        </button>
+        <button className="btn" onClick={() => clearGrid()}>
+          CLEAR
+        </button>
+      </div>
+      <div className="grid" ref={gridRef}>
+        {grid.map((row, rowIndex) =>
+          row.map((node, columnIndex) => {
             const { row, column, isFinal, isInitial, isWall } = node;
             return (
               <Node
@@ -152,12 +165,9 @@ export const Grid = () => {
                 onmouseout={() => handleMouseDown(row, column)}
               />
             );
-          })}
-        </div>
-      ))}
-      <button className="btn" onClick={() => clearGrid()}>
-        CLEAR
-      </button>
-    </div>
+          })
+        )}
+      </div>
+    </>
   );
 };
